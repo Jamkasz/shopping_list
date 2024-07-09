@@ -17,10 +17,19 @@ const shoppingListInDB = ref(database, "shoppingList")
 
 const inputFieldEl = document.getElementById("input-field")
 const addButtonEl = document.getElementById("add-button")
+const shoppingListEl = document.getElementById("shopping-list")
+
+function clearInputField(element) {
+    element.value = ""
+}
+
+function appendItemToList(itemValue, listEl) {
+    listEl.innerHTML += `<li>${itemValue}</li>`
+}
 
 addButtonEl.addEventListener("click", function() {
-    let inputValue = inputFieldEl.value
-    
-    // Challenge: Use the Firebase function 'push' to push inputValue to the database
+    let inputValue = inputFieldEl.value  
+    clearInputField(inputFieldEl)
     push(shoppingListInDB, inputValue)
+    appendItemToList(inputValue, shoppingListEl)
 })
