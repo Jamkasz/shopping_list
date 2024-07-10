@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js"
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js"
 
 const firebaseConfig = {
     apiKey: "AIzaSyA6uQNIRA_5yjqn1h7sWbWIDpxFn_v65Uk",
@@ -23,8 +23,14 @@ function clearInputField(element) {
     element.value = ""
 }
 
-function appendItemToList(itemValue, listEl) {
-    listEl.innerHTML += `<li>${itemValue}</li>`
+function appendItemToList(item, listEl) {
+    const newLiEl = document.createElement("li")
+    newLiEl.textContent = item[1]
+    newLiEl.addEventListener("dblclick", function () {
+        const itemLocationInDB = ref(database, `shoppingList/${item[0]}`)
+        remove(itemLocationInDB)
+    })
+    listEl.append(newLiEl)
 }
 
 function clearList(listEl) {
@@ -38,7 +44,7 @@ addButtonEl.addEventListener("click", function() {
 })
 
 onValue(shoppingListInDB, function (snapshot) {
-    const itemsArray = Object.values(snapshot.val())
+    const itemsArray = Object.entries(snapshot.val())
 
     clearList(shoppingListEl)
     
