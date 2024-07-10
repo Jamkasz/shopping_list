@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js"
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js"
 
 const firebaseConfig = {
     apiKey: "AIzaSyA6uQNIRA_5yjqn1h7sWbWIDpxFn_v65Uk",
@@ -27,9 +27,22 @@ function appendItemToList(itemValue, listEl) {
     listEl.innerHTML += `<li>${itemValue}</li>`
 }
 
+function clearList(listEl) {
+    listEl.innerHTML = ""
+}
+
 addButtonEl.addEventListener("click", function() {
     let inputValue = inputFieldEl.value  
     clearInputField(inputFieldEl)
     push(shoppingListInDB, inputValue)
-    appendItemToList(inputValue, shoppingListEl)
+})
+
+onValue(shoppingListInDB, function (snapshot) {
+    const itemsArray = Object.values(snapshot.val())
+
+    clearList(shoppingListEl)
+    
+    for (let i = 0; i < itemsArray.length; i++) {
+        appendItemToList(itemsArray[i], shoppingListEl)
+    }
 })
