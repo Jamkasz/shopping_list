@@ -26,7 +26,7 @@ function clearInputField(element) {
 function appendItemToList(item, listEl) {
     const newLiEl = document.createElement("li")
     newLiEl.textContent = item[1]
-    newLiEl.addEventListener("dblclick", function () {
+    newLiEl.addEventListener("click", function () {
         const itemLocationInDB = ref(database, `shoppingList/${item[0]}`)
         remove(itemLocationInDB)
     })
@@ -44,11 +44,13 @@ addButtonEl.addEventListener("click", function() {
 })
 
 onValue(shoppingListInDB, function (snapshot) {
-    const itemsArray = Object.entries(snapshot.val())
-
     clearList(shoppingListEl)
     
-    for (let i = 0; i < itemsArray.length; i++) {
-        appendItemToList(itemsArray[i], shoppingListEl)
+    if (snapshot.exists()) {
+        const itemsArray = Object.entries(snapshot.val())
+    
+        for (let i = 0; i < itemsArray.length; i++) {
+            appendItemToList(itemsArray[i], shoppingListEl)
+        }
     }
 })
